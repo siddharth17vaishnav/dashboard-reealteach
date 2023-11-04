@@ -23,6 +23,7 @@ import { StringColorProps, strengthColor, strengthIndicator } from '@/utils/pass
 import { RemoveRedEyeOutlined, RemoveRedEyeRounded } from '@mui/icons-material';
 import { supabase } from '@/utils/supabase';
 import Router from 'next/router';
+import { addCookie } from '@/utils/cookies';
 
 const AuthRegister = () => {
 
@@ -61,7 +62,10 @@ const AuthRegister = () => {
             onSubmit={async (values) => {
                 await supabase.auth.signUp({ email: values.email, password: values.password }).then(async ({ data, error }) => {
                     if (data) {
-                        await supabase.from('sellers').insert({ name: values.name, email: values.email }).select('*').then(() => Router.push('/'))
+                        await supabase.from('sellers').insert({ name: values.name, email: values.email }).select('*').then(() => {
+                            addCookie('auth_token', data.session?.access_token as string)
+                            Router.push('/')
+                        })
                     }
                     else if (error) throw error.message
                 })

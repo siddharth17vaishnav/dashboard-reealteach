@@ -19,12 +19,17 @@ import {
 import * as Yup from 'yup';
 import { Formik } from 'formik';
 import { RemoveRedEyeOutlined } from '@mui/icons-material';
+import { supabase } from '@/utils/supabase';
+import { error } from 'console';
+import { Router } from 'next/router';
+import { useRouter } from 'next/navigation';
+import { addCookie } from '@/utils/cookies';
 
 
 const AuthLogin = () => {
     const [checked, setChecked] = React.useState(false);
     const [capsWarning, setCapsWarning] = React.useState(false);
-
+    const router = useRouter()
 
     const [showPassword, setShowPassword] = React.useState(false);
     const handleClickShowPassword = () => {
@@ -46,16 +51,22 @@ const AuthLogin = () => {
     return (
         <Formik
             initialValues={{
-                email: 'info@codedthemes.com',
-                password: '123456',
+                email: '',
+                password: '',
                 submit: null
             }}
             validationSchema={Yup.object().shape({
                 email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
                 password: Yup.string().max(255).required('Password is required')
             })}
-            onSubmit={(values, { setErrors, setSubmitting }) => {
-
+            onSubmit={async (values) => {
+                await supabase.auth.signInWithPassword({ email: values.email, password: values.password }).then(({ data, error }) => {
+                    if (error) throw Error(error.message)
+                    if (data) {
+                        addCookie('auth_token', data.session.access_token)
+                        router.push('/')
+                    }
+                })
             }}
         >
             {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (

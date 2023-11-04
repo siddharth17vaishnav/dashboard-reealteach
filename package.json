@@ -14,6 +14,7 @@
     "@mui/icons-material": "^5.14.16",
     "@mui/material": "^5.14.16",
     "@supabase/supabase-js": "^2.38.4",
+    "cookies-next": "^4.0.0",
     "formik": "^2.4.5",
     "next": "14.0.1",
     "react": "^18",
