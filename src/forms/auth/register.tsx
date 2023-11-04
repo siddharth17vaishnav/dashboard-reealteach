@@ -21,6 +21,8 @@ import { Formik } from 'formik';
 
 import { StringColorProps, strengthColor, strengthIndicator } from '@/utils/password-strength';
 import { RemoveRedEyeOutlined, RemoveRedEyeRounded } from '@mui/icons-material';
+import { supabase } from '@/utils/supabase';
+import Router from 'next/router';
 
 const AuthRegister = () => {
 
@@ -56,7 +58,14 @@ const AuthRegister = () => {
                 email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
                 password: Yup.string().max(255).required('Password is required')
             })}
-            onSubmit={(values, { setErrors, setSubmitting }) => { }}
+            onSubmit={async (values) => {
+                await supabase.auth.signUp({ email: values.email, password: values.password }).then(async ({ data, error }) => {
+                    if (data) {
+                        await supabase.from('sellers').insert({ name: values.name, email: values.email }).select('*').then(() => Router.push('/'))
+                    }
+                    else if (error) throw error.message
+                })
+            }}
         >
             {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
                 <form noValidate onSubmit={handleSubmit}>
@@ -176,7 +185,7 @@ const AuthRegister = () => {
                     </Grid>
                 </form>
             )}
-        </Formik>
+        </Formik >
 
 
 
