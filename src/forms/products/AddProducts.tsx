@@ -94,7 +94,7 @@ export const AddProductForm = () => {
             })
             if (files.length > 0) {
                 await Promise.all(files.map(async (file) => {
-                    await supabase.storage.from('products').upload(`public/${id}/${file?.name}`, file, {
+                    await supabase.storage.from('products').upload(`public/${id}/${name}/${file?.name}`, file, {
                         cacheControl: '3600',
                         upsert: false
                     }).then(async res => {
