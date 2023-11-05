@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import { styled, useTheme, Theme, CSSObject } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import MuiDrawer from '@mui/material/Drawer';
@@ -16,9 +16,9 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
-import MailIcon from '@mui/icons-material/Mail';
 import { useMediaQuery } from '@mui/material';
+import { AddCircleOutline, Inventory } from '@mui/icons-material';
+import Link from 'next/link';
 
 const drawerWidth = 240;
 
@@ -91,7 +91,19 @@ const DrawerComp = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'op
     }),
 );
 
-export default function Drawer() {
+const options = [{
+    id: 1,
+    title: 'Products',
+    link: '/products',
+    icon: <Inventory />
+}, {
+    id: 2,
+    title: 'Add Product',
+    link: '/products/add-product',
+    icon: <AddCircleOutline />
+}]
+
+export default function Drawer({ children }: { children: ReactNode }) {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('md'))
     const [open, setOpen] = useState(isMobile || false);
@@ -138,56 +150,35 @@ export default function Drawer() {
                 </DrawerHeader>
                 <Divider />
                 <List>
-                    {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-                        <ListItem key={text} disablePadding sx={{ display: 'block' }}>
-                            <ListItemButton
-                                sx={{
-                                    minHeight: 48,
-                                    justifyContent: open ? 'initial' : 'center',
-                                    px: 2.5,
-                                }}
-                            >
-                                <ListItemIcon
+                    {options.map((option, index) => (
+                        <ListItem key={option.id} disablePadding sx={{ display: 'block' }}>
+                            <Link href={option.link}>
+                                <ListItemButton
                                     sx={{
-                                        minWidth: 0,
-                                        mr: open ? 3 : 'auto',
-                                        justifyContent: 'center',
+                                        minHeight: 48,
+                                        justifyContent: open ? 'initial' : 'center',
+                                        px: 2.5,
                                     }}
                                 >
-                                    {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                                </ListItemIcon>
-                                <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
-                            </ListItemButton>
-                        </ListItem>
-                    ))}
-                </List>
-                <Divider />
-                <List>
-                    {['All mail', 'Trash', 'Spam'].map((text, index) => (
-                        <ListItem key={text} disablePadding sx={{ display: 'block' }}>
-                            <ListItemButton
-                                sx={{
-                                    minHeight: 48,
-                                    justifyContent: open ? 'initial' : 'center',
-                                    px: 2.5,
-                                }}
-                            >
-                                <ListItemIcon
-                                    sx={{
-                                        minWidth: 0,
-                                        mr: open ? 3 : 'auto',
-                                        justifyContent: 'center',
-                                    }}
-                                >
-                                    {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                                </ListItemIcon>
-                                <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
-                            </ListItemButton>
+                                    <ListItemIcon
+                                        sx={{
+                                            minWidth: 0,
+                                            mr: open ? 3 : 'auto',
+                                            justifyContent: 'center',
+                                        }}
+                                    >
+                                        {option.icon}
+                                    </ListItemIcon>
+                                    <ListItemText primary={option.title} sx={{ opacity: open ? 1 : 0 }} />
+                                </ListItemButton>
+                            </Link>
                         </ListItem>
                     ))}
                 </List>
             </DrawerComp>
-
-        </Box>
+            <Box sx={{ paddingTop: '85px', px: 2 }}>
+                {children}
+            </Box>
+        </Box >
     );
 }
