@@ -176,7 +176,7 @@ export default function Drawer({ children }: { children: ReactNode }) {
                     ))}
                 </List>
             </DrawerComp>
-            <Box sx={{ paddingTop: '85px', px: 2 }}>
+            <Box sx={{ width: '100%', paddingTop: '85px', px: 2, minHeight: '100vh', background: '#ffffff' }}>
                 {children}
             </Box>
         </Box >

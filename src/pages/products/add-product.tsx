@@ -1,9 +1,7 @@
+import { AddProductForm } from '@/forms/products/AddProducts'
 import React from 'react'
 
 const AddProduct = () => {
-    return (
-        <div>add-product</div>
-    )
+    return <AddProductForm />
 }
-
 export default AddProduct
